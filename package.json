@@ -1,0 +1,23 @@
+{
+	"name": "linter_d",
+	"version": "0.0.0",
+	"description": "An always-on linter",
+	"main": "src/index.mjs",
+	"scripts": {
+		"start": "node src/index.mjs"
+	},
+	"keywords": [
+		"linter",
+		"daemon",
+		"always-on"
+	],
+	"author": "Roee Shapira",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/node": "^14.17.9"
+	},
+	"peerDependencies": {
+		"eslint": "^7.32.0",
+		"prettier": "^2.3.2"
+	}
+}
