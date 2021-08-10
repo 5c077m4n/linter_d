@@ -1,3 +1,3 @@
-import { cli } from './cli/index.mjs';
+import { run } from './cli/index.mjs';
 
-cli();
+run();

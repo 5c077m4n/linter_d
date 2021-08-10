@@ -1,5 +1,5 @@
 import { initDaemon } from '../server/index.mjs';
 
-export async function cli() {
+export async function run() {
 	await initDaemon();
 }
