@@ -3,14 +3,14 @@ import { tmpdir } from 'os';
 import { resolve } from 'path';
 import { promises as fs } from 'fs';
 
-import { Linter } from 'eslint';
+import { ESLint } from 'eslint';
 import prettier from 'prettier';
 
 const SOCK_PATH = resolve(tmpdir(), 'linter_daemon.sock');
 const ESLINT = 'eslint';
 const PRETTIER = 'prettier';
 
-const eslinter = new Linter();
+const eslint = new ESLint({ fix: true });
 
 /**
  * @typedef {object} Payload
@@ -24,7 +24,7 @@ const eslinter = new Linter();
  * @property {Payload} payload
  */
 
-const daemon = createServer({ allowHalfOpen: true }, (connection) => {
+const daemon = createServer({ allowHalfOpen: true }, async (connection) => {
 	connection.on('data', (data) => {
 		/** @type {Message} */
 		const message = JSON.parse(data.toString());
@@ -35,7 +35,7 @@ const daemon = createServer({ allowHalfOpen: true }, (connection) => {
 
 		switch (cmd) {
 			case ESLINT: {
-				const result = eslinter.verifyAndFix(content, options);
+				const result = await eslint.lintFiles([config.filepaths]);
 				return connection.write(JSON.stringify(result));
 			}
 			case PRETTIER: {
@@ -61,3 +61,5 @@ process.on('SIGINT', async () => {
 	daemon.close();
 	await fs.rm(SOCK_PATH, { force: true });
 });
+
+setTimeout(daemon.close, 1000 * 60 * 60 * 3);
