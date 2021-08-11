@@ -5,10 +5,12 @@ import { promises as fs } from 'fs';
 
 import { ESLint } from 'eslint';
 import prettier from 'prettier';
+import sortPackageJson from 'sort-package-json';
 
 const SOCK_PATH = resolve(tmpdir(), 'linter_daemon.sock');
 const ESLINT = 'eslint';
 const PRETTIER = 'prettier';
+const SORT_PACKAGE_JSON = 'sort-package-json';
 
 const eslint = new ESLint({ fix: true });
 
@@ -40,6 +42,10 @@ const daemon = createServer({ allowHalfOpen: true }, async (connection) => {
 			}
 			case PRETTIER: {
 				const result = prettier.format(content, options);
+				return connection.write(result);
+			}
+			case SORT_PACKAGE_JSON: {
+				const result = sortPackageJson(content);
 				return connection.write(result);
 			}
 			default: {
